@@ -1,0 +1,87 @@
+<style>
+    table {
+        border-collapse: collapse;
+        width: 100%;
+    }
+
+    th, td {
+        border: 1px solid black;
+        padding: 8px;
+        text-align: center;
+    }
+
+    thead th {
+        font-weight: bold !important;
+        color: black !important;
+        background-color: #f2f2f2; /* Optional: Light gray background */
+    }
+
+    h2 {
+        font-weight: bold;
+    }
+</style>
+
+<h2 class="text-center">{%= __("Income Expense") %}</h2>
+
+<table>
+    <thead>
+        <tr>
+            <th rowspan="2">{%= __("S #") %}</th>
+            <th rowspan="2">{%= __("Account") %}</th>
+
+            <!-- Dynamically Generate Parent Cost Center Headers -->
+            {% if (data && data.length) { %}
+                {% var parentGroups = {}; %}
+
+                <!-- Group child cost centers under their respective parents -->
+                {% for (var i = 0; i < data.length; i++) { %}
+                    {% var row = data[i]; %}
+                    {% for (var key in row) { %}
+                        {% if (key !== "account" && key !== "total" && key !== "parent_cost_center") { %}
+                            {% var parent = row.parent_cost_center || "Uncategorized"; %}
+                            {% if (!parentGroups[parent]) { parentGroups[parent] = []; } %}
+                            {% if (parentGroups[parent].indexOf(key) === -1) { parentGroups[parent].push(key); } %}
+                        {% } %}
+                    {% } %}
+                {% } %}
+
+                <!-- Render Parent Headers -->
+                {% for (var parent in parentGroups) { %}
+                    <th colspan="{%= parentGroups[parent].length %}">{%= parent %}</th>
+                {% } %}
+                <th rowspan="2">{%= __("Total") %}</th>
+            {% } %}
+        </tr>
+
+        <tr>
+            {% for (var parent in parentGroups) { %}
+                {% for (var i = 0; i < parentGroups[parent].length; i++) { %}
+                    <th>{%= parentGroups[parent][i] %}</th>
+                {% } %}
+            {% } %}
+        </tr>
+    </thead>
+
+    <tbody>
+        {% if (data && data.length) { %}
+            {% for (var i = 0; i < data.length; i++) { %}
+                <tr>
+                    <td>{%= i + 1 %}</td>
+                    <td>{%= data[i].account || "" %}</td>
+
+                    {% for (var parent in parentGroups) { %}
+                        {% for (var j = 0; j < parentGroups[parent].length; j++) { %}
+                            <td>{%= data[i][parentGroups[parent][j]] || 0 %}</td>
+                        {% } %}
+                    {% } %}
+
+                    <td>{%= data[i].total || 0 %}</td>
+                </tr>
+            {% } %}
+        {% } else { %}
+            <tr>
+                <td colspan="100%" class="text-center">{%= __("No records found") %}</td>
+            </tr>
+        {% } %}
+    </tbody>
+</table>
