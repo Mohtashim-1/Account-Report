@@ -48,6 +48,7 @@ def get_columns():
     columns.append({"label": "Total", "fieldname": "total", "fieldtype": "Currency", "width": 200})
 
     return columns, cost_center_map, parent_mapping
+    
 
 def get_data(filters, cost_center_map, parent_mapping):
     from_date = filters.get("from_date")
@@ -88,6 +89,8 @@ def get_data(filters, cost_center_map, parent_mapping):
                     row[cost_center] = amount
                     row["total"] += amount
 
+            # Add parent cost center to the row
+            row["parent_cost_center"] = parent_mapping.get(cost_center, "Uncategorized")
             final_data.append(row)
 
         # Add total row for each category

@@ -1,0 +1,28 @@
+<h2 style="text-align: center;">Income Expense Cost Center Report</h2>
+<table border="1" style="width: 100%; border-collapse: collapse;">
+    <thead>
+        <tr>
+            <th style="padding: 8px; background-color: #f2f2f2;">Account</th>
+            {% for row in data %}
+                <th colspan="2" style="padding: 8px; background-color: #f2f2f2;">{{ row.parent_cost_center }}</th>
+            {% endfor %}
+        </tr>
+        <tr>
+            <th style="padding: 8px; background-color: #f2f2f2;">Amount</th>
+            {% for row in data %}
+                <th style="padding: 8px; background-color: #f2f2f2;">{{ row.child_cost_center }}</th>
+            {% endfor %}
+        </tr>
+    </thead>
+    <tbody>
+        {% set accounts = data | map(attribute="account") | unique %}
+        {% for account in accounts %}
+        <tr>
+            <td style="padding: 8px; font-weight: bold;">{{ account }}</td>
+            {% for row in data if row.account == account %}
+                <td style="padding: 8px; text-align: right;">{{ row.total_amount }}</td>
+            {% endfor %}
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>

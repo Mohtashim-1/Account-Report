@@ -38,7 +38,7 @@
                     {% var row = data[i]; %}
                     {% for (var key in row) { %}
                         {% if (key !== "account" && key !== "total" && key !== "parent_cost_center") { %}
-                            {% var parent = row.parent_cost_center || "Uncategorized"; %}
+                            {% var parent = parent_mapping[key] || "Uncategorized"; %}
                             {% if (!parentGroups[parent]) { parentGroups[parent] = []; } %}
                             {% if (parentGroups[parent].indexOf(key) === -1) { parentGroups[parent].push(key); } %}
                         {% } %}
