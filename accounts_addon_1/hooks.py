@@ -122,6 +122,12 @@ app_license = "mit"
 # ---------------
 # Hook on document methods and events
 
+doc_events = {
+    "Sales Invoice": {
+        "on_submit": "accounts_addon_1.accounts_addon_1.sales_invoice.sales_invoice.custom_invoice_logic"
+    }
+}
+
 # doc_events = {
 # 	"*": {
 # 		"on_update": "method",
